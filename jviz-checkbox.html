@@ -13,7 +13,11 @@ The Jviz Project is under the MIT License. See https://github.com/jviz/jviz/blob
 <dom-module id="jviz-checkbox">
   <template>
     <style>
-      /* Checkbox style */
+      :host
+      {
+        --jviz-checkbox--background: var(--jviz-green);
+        --jviz-checkbox--color: var(--jviz-green-over);
+      }
       :host .checkbox
       {
         cursor: pointer;
@@ -53,13 +57,13 @@ The Jviz Project is under the MIT License. See https://github.com/jviz/jviz/blob
       :host[checked] .checkbox:after
       {
         opacity: 1;
-        border-color: var(--jviz-white);
+        border-color: var(--jviz-checkbox--color);
       }
 
       /* Checked -> change background */
       :host[checked] .checkbox
       {
-        background-color: var(--jviz-green);
+        background-color: var(--jviz-checkbox--background);
       }
 
     </style>
@@ -75,12 +79,26 @@ The Jviz Project is under the MIT License. See https://github.com/jviz/jviz/blob
   //Checkbox properties
   jviz_checkbox.properties = {};
   jviz_checkbox.properties.checked = { type: Boolean, reflectToAttribute: true, observer: '_update_checked' };
+  jviz_checkbox.properties.color = { type: String, reflectToAttribute: true, observer: '_update_color', value: 'green' };
 
   //Update the checked value
   jviz_checkbox._update_checked = function(value)
   {
     //Emit the change event
     this.fire('change', { checked: value });
+  };
+
+  //Update the color value
+  jviz_checkbox._update_color = function(value)
+  {
+    //Update the background color variable
+    this.customStyle['--jviz-checkbox--background'] = 'var(--jviz-' + value + ')';
+
+    //Update the text color
+    this.customStyle['--jviz-checkbox--color'] = 'var(--jviz-' + value + '-over)';
+
+    //Update the styles
+    this.updateStyles();
   };
 
   //Toggle the checked
